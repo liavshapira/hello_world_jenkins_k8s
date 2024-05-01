@@ -42,10 +42,12 @@ spec:
 
         // Working accourding to flow from:
         // https://learn.microsoft.com/en-us/dotnet/core/docker/build-container?tabs=linux&pivots=dotnet-8-0
+
         stage('InstallDotNet') {
             steps {
                 sh 'apt-get update -y'
                 sh 'apt-get install -y dotnet-sdk-8.0'
+                sh 'apt-get install -y docker.io'
             }
         }
         
