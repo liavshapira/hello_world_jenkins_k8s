@@ -1,10 +1,20 @@
 #################
 # Environment Deletion flow:
+
+# Verify entities in NS before deletion
+kubectl get all -n stamns
+kubectl get all -n ns4finaltest
+
+# Delete extra ns
+kubectl delete namespace ns4finaltest
+kubectl delete namespace stamns
+
 kubectl delete -f jenkins_service.yaml
 kubectl delete -f jenkins_deployment.yaml
 kubectl delete -f jenkins_persistent_volume_claim.yaml
 kubectl delete -f jenkins_persistent_volume.yaml
 kubectl delete namespace devops
+
 
 rm -rf /PlayGround/JenkinsAsPod/JenkisMisc/*
 rm -rf /PlayGround/JenkinsAsPod/DataFiles/*
