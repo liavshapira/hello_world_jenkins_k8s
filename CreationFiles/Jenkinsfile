@@ -99,7 +99,7 @@ ENTRYPOINT ["dotnet", "DotNet.Docker.dll"]
             sh "echo '${dockerfileContent}' | tee -a docker-working/App/Dockerfile"
         }
         // pwd and ls are used only for debug. 
-        sh 'cd docker-working/App && pwd && ls -la && echo "going to create an image" && docker create --name core-counter counter-image'
+        //sh 'cd docker-working/App && pwd && ls -la && echo "going to create an image" && docker create --name core-counter counter-image'
     }
 }
 
