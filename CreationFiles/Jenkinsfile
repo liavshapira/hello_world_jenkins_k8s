@@ -1,0 +1,69 @@
+// Revised Code
+// Uses Declarative syntax to run commands inside a container.
+pipeline {
+    agent {
+        kubernetes {
+            // Rather than inline YAML, in a multibranch Pipeline you could use: yamlFile 'jenkins-pod.yaml'
+            // Or, to avoid YAML:
+            // containerTemplate {
+            //     name 'shell'
+            //     image 'ubuntu'
+            //     command 'sleep'
+            //     args 'infinity'
+            // }
+            yaml '''
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: shell
+    image: ubuntu
+    command:
+    - sleep
+    args:
+    - infinity
+'''
+            // Can also wrap individual steps:
+            // container('shell') {
+            //     sh 'hostname'
+            // }
+            defaultContainer 'shell'
+        }
+    }
+
+    stages {
+
+        stage('TestHello') {
+            steps {
+                //sh 'hostname'
+                echo "Hello from K8S"
+            }
+        }
+
+        // Working accourding to flow from:
+        // https://learn.microsoft.com/en-us/dotnet/core/docker/build-container?tabs=linux&pivots=dotnet-8-0
+        stage('InstallDotNet') {
+            steps {
+                sh 'apt-get update -y'
+                sh 'apt-get install -y dotnet-sdk-8.0'
+            }
+        }
+        
+        stage('RunDotNet') {
+            steps {
+                sh 'mkdir docker-working'
+                sh 'cd docker-working'
+                sh 'dotnet new console -o App -n DotNet.Docker'
+                sh 'dotnet publish -c Release'
+                sh 'ls -la'
+            }
+        }
+
+        stage('Go2SleepSoIcanTest') {
+            steps {
+                sleep 600
+            }
+        }
+        
+    }
+}
