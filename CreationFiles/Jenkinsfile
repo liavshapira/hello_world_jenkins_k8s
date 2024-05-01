@@ -49,21 +49,34 @@ spec:
             }
         }
         
-        stage('RunDotNet') {
-            steps {
-                sh 'mkdir docker-working'
-                sh 'cd docker-working'
-                sh 'dotnet new console -o App -n DotNet.Docker'
-                sh 'dotnet publish -c Release'
-                sh 'ls -la'
-            }
+stage('CreateDotNetApp') {
+    steps {
+        sh 'mkdir docker-working && cd docker-working && dotnet new console -o App -n DotNet.Docker'
+
+        script {
+            def programContent = '''
+var counter = 0;
+var max = args.Length is not 0 ? Convert.ToInt32(args[0]) : -1;
+while (max is -1 || counter < max) {
+    Console.WriteLine($"Counter: {++counter}");
+    await Task.Delay(TimeSpan.FromMilliseconds(1_000));
+}
+'''
+
+            sh "echo '${programContent}' | tee -a docker-working/App/Program.cs"
         }
+
+        sh 'cd docker-working/App && pwd && ls -la && echo "going to publish the dotnet app" && dotnet publish -c Release'
+    }
+}
 
         stage('Go2SleepSoIcanTest') {
             steps {
-                sleep 600
+                echo "Going to sleep now. Good night"
+                sleep 1000
             }
         }
         
     }
 }
+
