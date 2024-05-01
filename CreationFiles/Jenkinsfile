@@ -65,7 +65,7 @@ while (max is -1 || counter < max) {
 
             sh "echo '${programContent}' | tee -a docker-working/App/Program.cs"
         }
-
+        // pwd and ls are used only for debug. 
         sh 'cd docker-working/App && pwd && ls -la && echo "going to publish the dotnet app" && dotnet publish -c Release'
     }
 }
@@ -73,7 +73,9 @@ while (max is -1 || counter < max) {
         stage('Go2SleepSoIcanTest') {
             steps {
                 echo "Going to sleep now. Good night"
-                sleep 1000
+                // use sleep for debug. If need to keep pod up. (when counter in dot net code is not used)
+                // increase the sleep as needed.
+                sleep 1
             }
         }
         
